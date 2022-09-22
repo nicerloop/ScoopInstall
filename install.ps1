@@ -305,6 +305,13 @@ function Import-ScoopShim {
     Pop-Location
     $absolutePath = Resolve-Path $path
 
+    # Convert to Windows path from WSL
+    if ($IS_EXECUTED_FROM_WSL) {
+        $path = wslpath -w $path
+        $relativePath = $relativePath -Replace ([Regex]::Escape("/")), "\"
+        $absolutePath = wslpath -w $absolutePath
+    }
+
     # if $path points to another drive resolve-path prepends .\ which could break shims
     $ps1text = if ($relativePath -match '^(\.\\)?\w:.*$') {
         @(
