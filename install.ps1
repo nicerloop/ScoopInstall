@@ -362,10 +362,10 @@ function Import-ScoopShim {
 
     if ($IS_EXECUTED_FROM_WSL) {
         $shim_path = Join-Path $SCOOP_APP_DIR "supporting" "shimexe" "bin" "shim.exe"
-        Copy-Item $shim_path $(Join-Path $SCOOP_SHIMS_DIR "pwsh.exe") -Force
+        Copy-Item $shim_path $(Join-Path $SCOOP_SHIMS_DIR "scoop.exe") -Force
         @(
             "path = wsl",
-            "args = pwsh"
+            "args = pwsh -noprofile -ex unrestricted -file `"$(wslpath -u $absolutePath)`""
         ) -join "`n" | Out-UTF8File $(Join-Path $SCOOP_SHIMS_DIR "pwsh.shim")
     }
 }
