@@ -377,8 +377,9 @@ function Get-Env {
 function Add-ShimsDirToPath {
     # Get $env:PATH of current user
     $userEnvPath = Get-Env 'PATH'
+    $PATH_SCOOP_SHIMS_DIR = $IS_EXECUTED_FROM_WSL ? (wslpath -w $SCOOP_SHIMS_DIR) : $SCOOP_SHIMS_DIR
 
-    if ($userEnvPath -notmatch [Regex]::Escape($SCOOP_SHIMS_DIR)) {
+    if ($userEnvPath -notmatch [Regex]::Escape($PATH_SCOOP_SHIMS_DIR)) {
         $h = (Get-PSProvider 'FileSystem').Home
         if (!$h.EndsWith('\')) {
             $h += '\'
