@@ -359,6 +359,15 @@ function Import-ScoopShim {
         "    powershell.exe -noprofile -ex unrestricted -file `"$absolutePath`" $arg `"$@`"",
         "fi"
     ) -join "`n" | Out-UTF8File $shim -NoNewLine
+
+    if ($IS_EXECUTED_FROM_WSL) {
+        $shim_path = Join-Path $SCOOP_APP_DIR "supporting" "shimexe" "bin" "shim.exe"
+        Copy-Item $shim_path $(Join-Path $SCOOP_SHIMS_DIR "pwsh.exe") -Force
+        @(
+            "path = wsl",
+            "args = pwsh"
+        ) -join "`n" | Out-UTF8File $(Join-Path $SCOOP_SHIMS_DIR "pwsh.shim")
+    }
 }
 
 function Get-Env {
