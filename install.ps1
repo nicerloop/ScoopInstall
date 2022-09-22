@@ -569,7 +569,7 @@ function Write-DebugInfo {
 
 # Prepare variables
 $IS_EXECUTED_FROM_IEX = ($null -eq $MyInvocation.MyCommand.Path)
-$IS_EXECUTED_FROM_WSL = ([bool](Get-Command -Name 'wslpath' -ErrorAction SilentlyContinue))
+$IS_EXECUTED_FROM_WSL = $PSVersionTable.OS -match "WSL"
 
 # Check $env:USERPROFILE and $env:ProgramData are set, especially when run from WSL
 if ("$env:USERPROFILE" -eq "" || "$env:ProgramData" -eq "") {
