@@ -368,6 +368,9 @@ function Get-Env {
     )
 
     $target = if ($global) { 'Machine' } else { 'User' }
+    if ($IS_EXECUTED_FROM_WSL) {
+        return powershell.exe -c "[Environment]::GetEnvironmentVariable('$name', '$target')"
+    }
     return [Environment]::GetEnvironmentVariable($name, $target)
 }
 
