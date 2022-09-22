@@ -557,6 +557,11 @@ function Write-DebugInfo {
 $IS_EXECUTED_FROM_IEX = ($null -eq $MyInvocation.MyCommand.Path)
 $IS_EXECUTED_FROM_WSL = ([bool](Get-Command -Name 'wslpath' -ErrorAction SilentlyContinue))
 
+# Check $env:USERPROFILE and $env:ProgramData are set, especially when run from WSL
+if ("$env:USERPROFILE" -eq "" || "$env:ProgramData" -eq "") {
+    Deny-Install "Scoop requires `$env:USERPROFILE and `$env:ProgramData to be set. For WSL, you might define WSLENV=USERPROFILE/p:ProgramData/p (see https://learn.microsoft.com/en-us/windows/wsl/filesystems#share-environment-variables-between-windows-and-wsl-with-wslenv)"
+}
+
 # Scoop root directory
 $SCOOP_DIR = $ScoopDir, $env:SCOOP, $(Join-Path $env:USERPROFILE "scoop") | Where-Object { -not [String]::IsNullOrEmpty($_) } | Select-Object -First 1
 # Scoop global apps directory
