@@ -116,6 +116,7 @@ function Test-ValidateParameter {
 }
 
 function Test-IsAdministrator {
+    if ($IS_EXECUTED_FROM_WSL) { return false }
     return ([Security.Principal.WindowsPrincipal]`
             [Security.Principal.WindowsIdentity]::GetCurrent()`
     ).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
@@ -554,6 +555,7 @@ function Write-DebugInfo {
 
 # Prepare variables
 $IS_EXECUTED_FROM_IEX = ($null -eq $MyInvocation.MyCommand.Path)
+$IS_EXECUTED_FROM_WSL = ([bool](Get-Command -Name 'wslpath' -ErrorAction SilentlyContinue))
 
 # Scoop root directory
 $SCOOP_DIR = $ScoopDir, $env:SCOOP, "$env:USERPROFILE\scoop" | Where-Object { -not [String]::IsNullOrEmpty($_) } | Select-Object -First 1
