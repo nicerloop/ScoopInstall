@@ -290,14 +290,14 @@ function Out-UTF8File {
 function Import-ScoopShim {
     Write-InstallInfo "Creating shim..."
     # The scoop executable
-    $path = "$SCOOP_APP_DIR\bin\scoop.ps1"
+    $path = Join-Path $SCOOP_APP_DIR "bin" "scoop.ps1"
 
     if (!(Test-Path $SCOOP_SHIMS_DIR)) {
         New-Item -Type Directory $SCOOP_SHIMS_DIR | Out-Null
     }
 
     # The scoop shim
-    $shim = "$SCOOP_SHIMS_DIR\scoop"
+    $shim = Join-Path $SCOOP_SHIMS_DIR "scoop"
 
     # Convert to relative path
     Push-Location $SCOOP_SHIMS_DIR
@@ -440,7 +440,7 @@ function Add-Config {
 function Add-DefaultConfig {
     # If user-level SCOOP env not defined, save to rootPath
     if (!(Get-Env 'SCOOP')) {
-        if ($SCOOP_DIR -ne "$env:USERPROFILE\scoop") {
+        if ($SCOOP_DIR -ne $( Join-Path $env:USERPROFILE "scoop")) {
             Write-Verbose "Adding config rootPath: $SCOOP_DIR"
             Add-Config -Name 'rootPath' -Value $SCOOP_DIR | Out-Null
         }
@@ -453,7 +453,7 @@ function Add-DefaultConfig {
             Write-Verbose "Setting System Environment Variable SCOOP_GLOBAL: $env:SCOOP_GLOBAL"
             [Environment]::SetEnvironmentVariable('SCOOP_GLOBAL', $env:SCOOP_GLOBAL, 'Machine')
         } else {
-            if ($SCOOP_GLOBAL_DIR -ne "$env:ProgramData\scoop") {
+            if ($SCOOP_GLOBAL_DIR -ne $(Join-Path $env:ProgramData "scoop")) {
                 Write-Verbose "Adding config globalPath: $SCOOP_GLOBAL_DIR"
                 Add-Config -Name 'globalPath' -Value $SCOOP_GLOBAL_DIR | Out-Null
             }
@@ -467,7 +467,7 @@ function Add-DefaultConfig {
             Write-Verbose "Setting System Environment Variable SCOOP_CACHE: $env:SCOOP_CACHE"
             [Environment]::SetEnvironmentVariable('SCOOP_CACHE', $env:SCOOP_CACHE, 'Machine')
         } else {
-            if ($SCOOP_CACHE_DIR -ne "$SCOOP_DIR\cache") {
+            if ($SCOOP_CACHE_DIR -ne $(Join-Path $SCOOP_DIR "cache")) {
                 Write-Verbose "Adding config cachePath: $SCOOP_CACHE_DIR"
                 Add-Config -Name 'cachePath' -Value $SCOOP_CACHE_DIR | Out-Null
             }
@@ -491,14 +491,14 @@ function Install-Scoop {
     Write-InstallInfo "Downloading..."
     $downloader = Get-Downloader
     # 1. download scoop
-    $scoopZipfile = "$SCOOP_APP_DIR\scoop.zip"
+    $scoopZipfile = Join-Path $SCOOP_APP_DIR "scoop.zip"
     if (!(Test-Path $SCOOP_APP_DIR)) {
         New-Item -Type Directory $SCOOP_APP_DIR | Out-Null
     }
     Write-Verbose "Downloading $SCOOP_PACKAGE_REPO to $scoopZipfile"
     $downloader.downloadFile($SCOOP_PACKAGE_REPO, $scoopZipfile)
     # 2. download scoop main bucket
-    $scoopMainZipfile = "$SCOOP_MAIN_BUCKET_DIR\scoop-main.zip"
+    $scoopMainZipfile = Join-Path $SCOOP_MAIN_BUCKET_DIR "scoop-main.zip"
     if (!(Test-Path $SCOOP_MAIN_BUCKET_DIR)) {
         New-Item -Type Directory $SCOOP_MAIN_BUCKET_DIR | Out-Null
     }
@@ -508,15 +508,15 @@ function Install-Scoop {
     # Extract files from downloaded zip
     Write-InstallInfo "Extracting..."
     # 1. extract scoop
-    $scoopUnzipTempDir = "$SCOOP_APP_DIR\_tmp"
+    $scoopUnzipTempDir = Join-Path $SCOOP_APP_DIR "_tmp"
     Write-Verbose "Extracting $scoopZipfile to $scoopUnzipTempDir"
     Expand-ZipArchive $scoopZipfile $scoopUnzipTempDir
-    Copy-Item "$scoopUnzipTempDir\scoop-*\*" $SCOOP_APP_DIR -Recurse -Force
+    Copy-Item $(Join-Path $scoopUnzipTempDir "scoop-*" "*") $SCOOP_APP_DIR -Recurse -Force
     # 2. extract scoop main bucket
-    $scoopMainUnzipTempDir = "$SCOOP_MAIN_BUCKET_DIR\_tmp"
+    $scoopMainUnzipTempDir = Join-Path $SCOOP_MAIN_BUCKET_DIR "_tmp"
     Write-Verbose "Extracting $scoopMainZipfile to $scoopMainUnzipTempDir"
     Expand-ZipArchive $scoopMainZipfile $scoopMainUnzipTempDir
-    Copy-Item "$scoopMainUnzipTempDir\Main-*\*" $SCOOP_MAIN_BUCKET_DIR -Recurse -Force
+    Copy-Item $(Join-Path $scoopMainUnzipTempDir "Main-*" "*") $SCOOP_MAIN_BUCKET_DIR -Recurse -Force
 
     # Cleanup
     Remove-Item $scoopUnzipTempDir -Recurse -Force
@@ -558,20 +558,20 @@ $IS_EXECUTED_FROM_IEX = ($null -eq $MyInvocation.MyCommand.Path)
 $IS_EXECUTED_FROM_WSL = ([bool](Get-Command -Name 'wslpath' -ErrorAction SilentlyContinue))
 
 # Scoop root directory
-$SCOOP_DIR = $ScoopDir, $env:SCOOP, "$env:USERPROFILE\scoop" | Where-Object { -not [String]::IsNullOrEmpty($_) } | Select-Object -First 1
+$SCOOP_DIR = $ScoopDir, $env:SCOOP, $(Join-Path $env:USERPROFILE "scoop") | Where-Object { -not [String]::IsNullOrEmpty($_) } | Select-Object -First 1
 # Scoop global apps directory
-$SCOOP_GLOBAL_DIR = $ScoopGlobalDir, $env:SCOOP_GLOBAL, "$env:ProgramData\scoop" | Where-Object { -not [String]::IsNullOrEmpty($_) } | Select-Object -First 1
+$SCOOP_GLOBAL_DIR = $ScoopGlobalDir, $env:SCOOP_GLOBAL, $(Join-Path $env:ProgramData "scoop") | Where-Object { -not [String]::IsNullOrEmpty($_) } | Select-Object -First 1
 # Scoop cache directory
-$SCOOP_CACHE_DIR = $ScoopCacheDir, $env:SCOOP_CACHE, "$SCOOP_DIR\cache" | Where-Object { -not [String]::IsNullOrEmpty($_) } | Select-Object -First 1
+$SCOOP_CACHE_DIR = $ScoopCacheDir, $env:SCOOP_CACHE, $(Join-Path $SCOOP_DIR "cache") | Where-Object { -not [String]::IsNullOrEmpty($_) } | Select-Object -First 1
 # Scoop shims directory
-$SCOOP_SHIMS_DIR = "$SCOOP_DIR\shims"
+$SCOOP_SHIMS_DIR = Join-Path $SCOOP_DIR "shims"
 # Scoop itself directory
-$SCOOP_APP_DIR = "$SCOOP_DIR\apps\scoop\current"
+$SCOOP_APP_DIR = Join-Path $SCOOP_DIR "apps" "scoop" "current"
 # Scoop main bucket directory
-$SCOOP_MAIN_BUCKET_DIR = "$SCOOP_DIR\buckets\main"
+$SCOOP_MAIN_BUCKET_DIR = Join-Path $SCOOP_DIR "buckets" "main"
 # Scoop config file location
-$SCOOP_CONFIG_HOME = $env:XDG_CONFIG_HOME, "$env:USERPROFILE\.config" | Select-Object -First 1
-$SCOOP_CONFIG_FILE = "$SCOOP_CONFIG_HOME\scoop\config.json"
+$SCOOP_CONFIG_HOME = $env:XDG_CONFIG_HOME, $(Join-Path $env:USERPROFILE ".config") | Select-Object -First 1
+$SCOOP_CONFIG_FILE = Join-Path $SCOOP_CONFIG_HOME "scoop" "config.json"
 
 # TODO: Use a specific version of Scoop and the main bucket
 $SCOOP_PACKAGE_REPO = "https://github.com/ScoopInstaller/Scoop/archive/master.zip"
