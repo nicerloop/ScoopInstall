@@ -394,6 +394,9 @@ function Add-ShimsDirToPath {
 
         # For future sessions
         [System.Environment]::SetEnvironmentVariable('PATH', "$SCOOP_SHIMS_DIR;$userEnvPath", 'User')
+        if ($IS_EXECUTED_FROM_WSL) {
+            powershell.exe -c "[System.Environment]::SetEnvironmentVariable('PATH', '$PATH_SCOOP_SHIMS_DIR;$userEnvPath', 'User')"
+        }
         # For current session
         $env:PATH = "$SCOOP_SHIMS_DIR;$env:PATH"
     }
