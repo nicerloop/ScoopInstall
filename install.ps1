@@ -133,7 +133,7 @@ function Test-Prerequisite {
     }
 
     # Ensure Robocopy.exe is accessible
-    if (!([bool](Get-Command -Name 'robocopy' -ErrorAction SilentlyContinue))) {
+    if (!([bool](Get-Command -Name 'Robocopy.exe' -ErrorAction SilentlyContinue))) {
         Deny-Install "Scoop requires 'C:\Windows\System32\Robocopy.exe' to work. Please make sure 'C:\Windows\System32' is in your PATH."
     }
 
