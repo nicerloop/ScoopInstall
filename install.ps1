@@ -312,7 +312,7 @@ function Import-ScoopShim {
         @(
             "path = wsl",
             "args = pwsh -noprofile -ex unrestricted -file `"$absolutePath`""
-        ) -join "`n" | Out-UTF8File $(Join-Path $SCOOP_SHIMS_DIR "pwsh.shim")
+        ) -join "`n" | Out-UTF8File $(Join-Path $SCOOP_SHIMS_DIR "scoop.shim")
 
         return
     }
