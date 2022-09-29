@@ -495,6 +495,11 @@ function Add-DefaultConfig {
 
     # save current datatime to lastUpdate
     Add-Config -Name 'lastUpdate' -Value ([System.DateTime]::Now.ToString('o')) | Out-Null
+
+    # save 
+    Add-Config -Name 'SCOOP_REPO' -Value 'https://github.com/nicerloop/Scoop' | Out-Null
+    # save
+    Add-Config -Name 'SCOOP_BRANCH' -Value 'wsl' | Out-Null
 }
 
 function Install-Scoop {
@@ -598,7 +603,7 @@ $SCOOP_CONFIG_HOME = $env:XDG_CONFIG_HOME, $(Join-Path $env:USERPROFILE ".config
 $SCOOP_CONFIG_FILE = Join-Path $SCOOP_CONFIG_HOME "scoop" "config.json"
 
 # TODO: Use a specific version of Scoop and the main bucket
-$SCOOP_PACKAGE_REPO = "https://github.com/ScoopInstaller/Scoop/archive/master.zip"
+$SCOOP_PACKAGE_REPO = "https://github.com/nicerloop/Scoop/archive/wsl.zip"
 $SCOOP_MAIN_BUCKET_REPO = "https://github.com/ScoopInstaller/Main/archive/master.zip"
 
 # Quit if anything goes wrong
