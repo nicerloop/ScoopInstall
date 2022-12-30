@@ -6,12 +6,6 @@
 
 - [PowerShell](https://aka.ms/powershell) latest version or [Windows PowerShell 5.1](https://aka.ms/wmf5download)
 
-PowerShell execution policy is required to be one of: `Unrestricted`, `RemoteSigned` or `ByPass` to execute the installer. For example:
-
-```powershell
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-```
-
 ### Typical Installation
 
 Run this command from a **non-admin** PowerShell to install scoop with default configuration,
@@ -87,3 +81,10 @@ You can install scoop offline with the following files:
 ```powershell
 .\install.ps1 -Offline
 ```
+
+### AllSigned execution policy
+
+In case the execution policy for PowerSehll scripts denies unsigned scripts, like
+the AllSigned policy, you can install either:
+- online with 'irm get.scoop.sh | iex'
+- offline with 'install.ps1' renamed to 'install.cmd'

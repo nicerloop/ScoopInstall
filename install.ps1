@@ -1,3 +1,8 @@
+<# :
+@echo off
+powershell -noprofile "iex ""& {$(cat "%~f0" -raw)} %*"""
+exit /b %errorlevel%
+: #>
 # Issue Tracker: https://github.com/ScoopInstaller/Install/issues
 # Unlicense License:
 #
@@ -143,12 +148,6 @@ function Test-Prerequisite {
     # Detect if RunAsAdministrator, there is no need to run as administrator when installing Scoop.
     if (!$RunAsAdmin -and (Test-IsAdministrator)) {
         Deny-Install "Running the installer as administrator is disabled by default, see https://github.com/ScoopInstaller/Install#for-admin for details."
-    }
-
-    # Show notification to change execution policy
-    $allowedExecutionPolicy = @('Unrestricted', 'RemoteSigned', 'ByPass')
-    if ((Get-ExecutionPolicy).ToString() -notin $allowedExecutionPolicy) {
-        Deny-Install "PowerShell requires an execution policy in [$($allowedExecutionPolicy -join ", ")] to run Scoop. For example, to set the execution policy to 'RemoteSigned' please run 'Set-ExecutionPolicy RemoteSigned -Scope CurrentUser'."
     }
 
     # Test if scoop is installed, by checking if scoop command exists.
