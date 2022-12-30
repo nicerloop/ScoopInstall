@@ -494,26 +494,26 @@ function Install-Scoop {
         $scoopMainZipfile = $SCOOP_MAIN_BUCKET_ARCHIVE
         Write-InstallInfo "Main repository: $scoopMainZipfile"
     } else {
-    # Enable TLS 1.2
-    Optimize-SecurityProtocol
+        # Enable TLS 1.2
+        Optimize-SecurityProtocol
 
-    # Download scoop zip from GitHub
-    Write-InstallInfo "Downloading..."
-    $downloader = Get-Downloader
-    # 1. download scoop
-    $scoopZipfile = "$SCOOP_APP_DIR\scoop.zip"
-    if (!(Test-Path $SCOOP_APP_DIR)) {
-        New-Item -Type Directory $SCOOP_APP_DIR | Out-Null
-    }
-    Write-Verbose "Downloading $SCOOP_PACKAGE_REPO to $scoopZipfile"
-    $downloader.downloadFile($SCOOP_PACKAGE_REPO, $scoopZipfile)
-    # 2. download scoop main bucket
-    $scoopMainZipfile = "$SCOOP_MAIN_BUCKET_DIR\scoop-main.zip"
-    if (!(Test-Path $SCOOP_MAIN_BUCKET_DIR)) {
-        New-Item -Type Directory $SCOOP_MAIN_BUCKET_DIR | Out-Null
-    }
-    Write-Verbose "Downloading $SCOOP_MAIN_BUCKET_REPO to $scoopMainZipfile"
-    $downloader.downloadFile($SCOOP_MAIN_BUCKET_REPO, $scoopMainZipfile)
+        # Download scoop zip from GitHub
+        Write-InstallInfo "Downloading..."
+        $downloader = Get-Downloader
+        # 1. download scoop
+        $scoopZipfile = "$SCOOP_APP_DIR\scoop.zip"
+        if (!(Test-Path $SCOOP_APP_DIR)) {
+            New-Item -Type Directory $SCOOP_APP_DIR | Out-Null
+        }
+        Write-Verbose "Downloading $SCOOP_PACKAGE_REPO to $scoopZipfile"
+        $downloader.downloadFile($SCOOP_PACKAGE_REPO, $scoopZipfile)
+        # 2. download scoop main bucket
+        $scoopMainZipfile = "$SCOOP_MAIN_BUCKET_DIR\scoop-main.zip"
+        if (!(Test-Path $SCOOP_MAIN_BUCKET_DIR)) {
+            New-Item -Type Directory $SCOOP_MAIN_BUCKET_DIR | Out-Null
+        }
+        Write-Verbose "Downloading $SCOOP_MAIN_BUCKET_REPO to $scoopMainZipfile"
+        $downloader.downloadFile($SCOOP_MAIN_BUCKET_REPO, $scoopMainZipfile)
     }
 
     # Extract files from downloaded zip
@@ -533,8 +533,8 @@ function Install-Scoop {
     Remove-Item $scoopUnzipTempDir -Recurse -Force
     Remove-Item $scoopMainUnzipTempDir -Recurse -Force
     if (!$Offline) {
-    Remove-Item $scoopZipfile
-    Remove-Item $scoopMainZipfile
+        Remove-Item $scoopZipfile
+        Remove-Item $scoopMainZipfile
     }
 
     # Create the scoop shim
