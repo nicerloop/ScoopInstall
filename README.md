@@ -76,3 +76,14 @@ You can redirect all outputs to Out-Null or a log file to silence the installer.
 # Get result
 $LASTEXITCODE
 ```
+
+### Offline Installation
+
+You can install scoop offline with the following files:
+- install.ps1 from https://get.scoop.sh
+- Scoop-master.zip from https://github.com/ScoopInstaller/Scoop/archive/master.zip
+- Main-master.zip from https://github.com/ScoopInstaller/Main/archive/master.zip
+
+```powershell
+.\install.ps1 -Offline
+```

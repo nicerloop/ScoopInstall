@@ -40,6 +40,8 @@
 .PARAMETER ScoopCacheDir
     Specifies cache directory.
     If not specified, caches will be downloaded to '$ScoopDir\cache'.
+.PARAMETER Offline
+    Use provided archives to install offline
 .PARAMETER NoProxy
     Bypass system proxy during the installation.
 .PARAMETER Proxy
@@ -59,6 +61,7 @@ param(
     [String] $ScoopDir,
     [String] $ScoopGlobalDir,
     [String] $ScoopCacheDir,
+    [Switch] $Offline,
     [Switch] $NoProxy,
     [Uri] $Proxy,
     [System.Management.Automation.PSCredential] $ProxyCredential,
@@ -483,6 +486,14 @@ function Install-Scoop {
     Test-ValidateParameter
     # Check prerequisites
     Test-Prerequisite
+
+    if ($Offline) {
+        Write-InstallInfo "Using offline archives..."
+        $scoopZipfile = $SCOOP_PACKAGE_ARCHIVE
+        Write-InstallInfo "Scoop installer: $scoopZipfile"
+        $scoopMainZipfile = $SCOOP_MAIN_BUCKET_ARCHIVE
+        Write-InstallInfo "Main repository: $scoopMainZipfile"
+    } else {
     # Enable TLS 1.2
     Optimize-SecurityProtocol
 
@@ -503,6 +514,7 @@ function Install-Scoop {
     }
     Write-Verbose "Downloading $SCOOP_MAIN_BUCKET_REPO to $scoopMainZipfile"
     $downloader.downloadFile($SCOOP_MAIN_BUCKET_REPO, $scoopMainZipfile)
+    }
 
     # Extract files from downloaded zip
     Write-InstallInfo "Extracting..."
@@ -519,9 +531,11 @@ function Install-Scoop {
 
     # Cleanup
     Remove-Item $scoopUnzipTempDir -Recurse -Force
-    Remove-Item $scoopZipfile
     Remove-Item $scoopMainUnzipTempDir -Recurse -Force
+    if (!$Offline) {
+    Remove-Item $scoopZipfile
     Remove-Item $scoopMainZipfile
+    }
 
     # Create the scoop shim
     Import-ScoopShim
@@ -574,6 +588,10 @@ $SCOOP_CONFIG_FILE = "$SCOOP_CONFIG_HOME\scoop\config.json"
 # TODO: Use a specific version of Scoop and the main bucket
 $SCOOP_PACKAGE_REPO = "https://github.com/ScoopInstaller/Scoop/archive/master.zip"
 $SCOOP_MAIN_BUCKET_REPO = "https://github.com/ScoopInstaller/Main/archive/master.zip"
+
+# Offline archives
+$SCOOP_PACKAGE_ARCHIVE = "Scoop-master.zip"
+$SCOOP_MAIN_BUCKET_ARCHIVE = "Main-master.zip"
 
 # Quit if anything goes wrong
 $oldErrorActionPreference = $ErrorActionPreference
