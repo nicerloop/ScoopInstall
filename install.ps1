@@ -354,12 +354,15 @@ function Import-ScoopShim {
     @(
         "#!/bin/sh",
         "# $absolutePath",
-        "if command -v pwsh.exe > /dev/null 2>&1; then",
-        "    pwsh.exe -noprofile -ex unrestricted -file `"$absolutePath`" $arg `"$@`"",
+        "if command -v pwsh > /dev/null 2>&1; then",
+        "    pwsh -noprofile -ex unrestricted -file `"$absolutePath`" $arg `"$@`"",
         "else",
         "    powershell.exe -noprofile -ex unrestricted -file `"$absolutePath`" $arg `"$@`"",
         "fi"
     ) -join "`n" | Out-UTF8File $shim -NoNewLine
+    if (Test-CommandAvailable('chmod')) {
+        chmod +x "$shim"
+    }
 }
 
 function Get-Env {
