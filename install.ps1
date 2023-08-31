@@ -460,6 +460,7 @@ function Add-ShimsDirToPath {
             $shimsPath = $friendlyPath ? $friendlyPath : $SCOOP_SHIMS_DIR
             # For future sessions
             Add-Content $env:HOME/.zshrc "`nexport PATH=`$PATH`:$shimsPath"
+            Add-Content $env:HOME/.zshrc "`nexport XDG_CONFIG_HOME=`$HOME/.config"
             # For current session
             $env:PATH = "$env:PATH`:$shimsPath"
             return
@@ -559,6 +560,10 @@ function Add-DefaultConfig {
 
     # save current datatime to last_update
     Add-Config -Name 'last_update' -Value ([System.DateTime]::Now.ToString('o')) | Out-Null
+
+    # use nicerloop/Scoop:macos version
+    Add-Config -Name 'SCOOP_REPO' -Value 'https://github.com/nicerloop/Scoop' | Out-Null
+    Add-Config -Name 'SCOOP_BRANCH' -Value 'macos' | Out-Null
 }
 
 function Test-CommandAvailable {
@@ -593,7 +598,7 @@ function Install-Scoop {
                 $Env:HTTPS_PROXY = $downloader.Proxy.Address
             }
             Write-Verbose "Cloning $SCOOP_PACKAGE_GIT_REPO to $SCOOP_APP_DIR"
-            git clone -q $SCOOP_PACKAGE_GIT_REPO $SCOOP_APP_DIR
+            git clone -q $SCOOP_PACKAGE_GIT_REPO -b $SCOOP_PACKAGE_GIT_BRANCH $SCOOP_APP_DIR
             if (-Not $?) {
                 throw "Cloning failed. Falling back to downloading zip files."
             }
@@ -705,10 +710,11 @@ $SCOOP_CONFIG_HOME = $env:XDG_CONFIG_HOME, "$env:USERPROFILE/.config" | Select-O
 $SCOOP_CONFIG_FILE = "$SCOOP_CONFIG_HOME/scoop/config.json"
 
 # TODO: Use a specific version of Scoop and the main bucket
-$SCOOP_PACKAGE_REPO = "https://github.com/ScoopInstaller/Scoop/archive/master.zip"
+$SCOOP_PACKAGE_REPO = "https://github.com/nicerloop/Scoop/archive/macos.zip"
 $SCOOP_MAIN_BUCKET_REPO = "https://github.com/ScoopInstaller/Main/archive/master.zip"
 
-$SCOOP_PACKAGE_GIT_REPO = "https://github.com/ScoopInstaller/Scoop.git"
+$SCOOP_PACKAGE_GIT_REPO = "https://github.com/nicerloop/Scoop.git"
+$SCOOP_PACKAGE_GIT_BRANCH =  "macos"
 $SCOOP_MAIN_BUCKET_GIT_REPO = "https://github.com/ScoopInstaller/Main.git"
 
 # Quit if anything goes wrong
