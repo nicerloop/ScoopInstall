@@ -1,3 +1,16 @@
+# macOS branch
+
+Use like the standard scoop.sh installer, just change the script URL:
+
+```zsh
+pwsh
+```
+```powershell
+irm https://raw.githubusercontent.com/nicerloop/ScoopInstall/macos/install.ps1 | iex
+```
+
+Installs scoop from the macos branch in https://github.com/nicerloop/Scoop/tree/macos
+
 # Scoop (un)installer
 
 ## Installation
