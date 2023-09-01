@@ -117,7 +117,7 @@ function Test-ValidateParameter {
 
 function Test-IsAdministrator {
     if (!$IsWindows) {
-        return False
+        return $false
     }
     return ([Security.Principal.WindowsPrincipal]`
             [Security.Principal.WindowsIdentity]::GetCurrent()`
@@ -456,11 +456,12 @@ function Add-ShimsDirToPath {
             Write-InstallInfo "Adding $SCOOP_SHIMS_DIR to your path."
         }
 
-        if ($IsMacOS) {
+        if ($IsMacOS -Or $IsLinux) {
+            $profileFile = $IsMacOS ? ".zshrc" : ".bash_aliases"
             $shimsPath = $friendlyPath ? $friendlyPath : $SCOOP_SHIMS_DIR
             # For future sessions
-            Add-Content $env:HOME/.zshrc "`nexport PATH=`$PATH`:$shimsPath"
-            Add-Content $env:HOME/.zshrc "`nexport XDG_CONFIG_HOME=`$HOME/.config"
+            Add-Content $env:HOME/$profileFile "`nexport PATH=`$PATH`:$shimsPath"
+            Add-Content $env:HOME/$profileFile "`nexport XDG_CONFIG_HOME=`$HOME/.config"
             # For current session
             $env:PATH = "$env:PATH`:$shimsPath"
             return
@@ -684,11 +685,11 @@ function Write-DebugInfo {
 # Prepare variables
 $IS_EXECUTED_FROM_IEX = ($null -eq $MyInvocation.MyCommand.Path)
 if (($PSVersionTable.PSVersion.Major) -lt 6) {
-    $IsWindows = True
-    $IsMacOS = False
-    $IsLinux = False
+    $IsWindows = $true
+    $IsMacOS = $false
+    $IsLinux = $false
 }
-if ($IsMacOS) {
+if ($IsMacOS -Or $IsLinux) {
     $env:USERPROFILE = $env:HOME
     $env:ProgramData = "/usr/local/scoop"
 }
