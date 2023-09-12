@@ -461,7 +461,6 @@ function Add-ShimsDirToPath {
             $shimsPath = $friendlyPath ? $friendlyPath : $SCOOP_SHIMS_DIR
             # For future sessions
             Add-Content $env:HOME/$profileFile "`nexport PATH=`$PATH`:$shimsPath"
-            Add-Content $env:HOME/$profileFile "`nexport XDG_CONFIG_HOME=`$HOME/.config"
             # For current session
             $env:PATH = "$env:PATH`:$shimsPath"
             return
