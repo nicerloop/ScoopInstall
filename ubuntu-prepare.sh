@@ -20,4 +20,4 @@ sudo apt-get install -y powershell
 # pwsh
 
 # sudo apt upgrade
-sudo apt install -y wine
+sudo apt install -y wine icoutils imagemagick
