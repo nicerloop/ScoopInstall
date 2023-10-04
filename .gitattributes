@@ -1,7 +1,1 @@
-# retain windows line-endings in case checked out on mac or linux
-/install.ps1 eol=crlf
-* text eol=crlf
-# retain unix line-endings in case checked out windows
-/get-scoop.sh text oel=lf
-/ubuntu-prepare.sh text oel=lf
-/ubuntu-test.sh text oel=lf
+* text eol=lf
