@@ -2,4 +2,4 @@
 /install.ps1 eol=crlf
 * text eol=crlf
 # retain unix line-endings in case checked out windows
-*.sh text oel=lf
+/*.sh text oel=lf
