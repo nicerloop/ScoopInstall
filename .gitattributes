@@ -2,4 +2,6 @@
 /install.ps1 eol=crlf
 * text eol=crlf
 # retain unix line-endings in case checked out windows
-*.sh text oel=lf
+/get-scoop.sh text oel=lf
+/ubuntu-prepare.sh text oel=lf
+/ubuntu-test.sh text oel=lf
