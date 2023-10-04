@@ -1,4 +1,4 @@
 # retain windows line-endings in case checked out on mac or linux
-/ubuntu-test.sh oel=lf
+*.sh oel=lf
 /install.ps1 eol=crlf
 * text eol=crlf
