@@ -1,4 +1,5 @@
 # retain windows line-endings in case checked out on mac or linux
-*.sh oel=lf
 /install.ps1 eol=crlf
 * text eol=crlf
+# retain unix line-endings in case checked out windows
+*.sh oel=lf
